@@ -48,7 +48,7 @@ def _split_numeric_value(value: str) -> list[str]:
 def _recognize_with_microsoft(text: str, language: str) -> list[str]:
     try:
         from recognizers_number import NumberRecognizer
-        culture = "English" if language == "en" else "Spanish"
+        culture = "en-us" if language == "en" else "es-es"
         recognizer = NumberRecognizer()
         model = recognizer.get_number_model(culture)
         results = model.parse(text)
@@ -150,7 +150,10 @@ def _fallback_word_tokens(text: str, language: str) -> list[str]:
             has_number = False
 
     for word in words:
-        if word in units:
+        if word.isdigit():
+            flush()
+            tokens.extend(_split_numeric_value(word))
+        elif word in units:
             current += units[word]
             has_number = True
         elif word in tens:

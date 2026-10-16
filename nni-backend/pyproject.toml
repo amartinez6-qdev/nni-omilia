@@ -11,6 +11,7 @@ dependencies = [
     "fastapi>=0.115,<1.0",
     "faster-whisper>=1.1,<2.0",
     "av>=11,<19",
+    "emoji<2",
     "python-multipart>=0.0.20,<1.0",
     "recognizers-text-number>=1.0.2a2,<2.0",
     "uvicorn[standard]>=0.34,<1.0",
