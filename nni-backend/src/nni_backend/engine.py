@@ -103,9 +103,13 @@ def is_valid_greek_phone(number: str) -> bool:
     )
 
 
-def interpret_tokens(tokens: Iterable[str]) -> tuple[str, float, bool]:
+def generate_interpretations(tokens: Iterable[str]) -> list[Candidate]:
     normalized = validate_tokens(tokens)
-    candidates = _generate_candidates(normalized)
+    return _generate_candidates(normalized)
+
+
+def interpret_tokens(tokens: Iterable[str]) -> tuple[str, float, bool]:
+    candidates = generate_interpretations(tokens)
 
     # Score is intentionally independent from phone validity. The primary
     # criterion is directness, with generation order as the deterministic tie-breaker.

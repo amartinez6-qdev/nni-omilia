@@ -21,7 +21,7 @@ def test_health() -> None:
     assert client.get("/api/health").json() == {"status": "ok"}
 
 
-def test_interpret_endpoint_returns_only_selected_result(monkeypatch) -> None:
+def test_interpret_endpoint_returns_all_interpretations(monkeypatch) -> None:
     monkeypatch.setattr(api, "transcriber", FakeTranscriber())
     client = TestClient(api.app)
     response = client.post(
@@ -32,6 +32,10 @@ def test_interpret_endpoint_returns_only_selected_result(monkeypatch) -> None:
     assert response.status_code == 200
     assert response.json() == {
         "transcript": "2 10 69 30 6 6 4",
-        "interpretation": "2106930664",
-        "valid_greek_phone": True,
+        "interpretations": [
+            {"number": "2106930664", "valid_greek_phone": True},
+            {"number": "210693664", "valid_greek_phone": False},
+            {"number": "21060930664", "valid_greek_phone": False},
+            {"number": "2106093664", "valid_greek_phone": True},
+        ],
     }

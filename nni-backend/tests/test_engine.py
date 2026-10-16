@@ -35,6 +35,20 @@ def test_direct_candidate_wins_even_when_an_alternative_is_valid() -> None:
     assert valid is False
 
 
+def test_advanced_example_contains_the_valid_ambiguous_variant() -> None:
+    candidates = _generate_candidates(
+        ["0", "0", "30", "69", "700", "24", "1", "3", "50", "2"]
+    )
+
+    valid_numbers = [
+        candidate.number
+        for candidate in candidates
+        if is_valid_greek_phone(candidate.number)
+    ]
+
+    assert "00306972413502" in valid_numbers
+
+
 @pytest.mark.parametrize(
     ("number", "expected"),
     [

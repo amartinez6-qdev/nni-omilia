@@ -7,8 +7,8 @@ from pathlib import Path
 from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 
-from .engine import InterpretationError, interpret_tokens
-from .models import HealthResponse, InterpretationResponse
+from .engine import InterpretationError, generate_interpretations, is_valid_greek_phone
+from .models import HealthResponse, InterpretationItem, InterpretationResponse
 from .number_parser import NumberParsingError, parse_transcript
 from .transcription import TranscriptionError, WhisperTranscriber
 
@@ -79,7 +79,7 @@ async def interpret(audio: UploadFile = File(...)) -> InterpretationResponse:
         try:
             transcription = transcriber.transcribe(path)
             parsed = parse_transcript(transcription.text, transcription.language)
-            number, _score, valid = interpret_tokens(parsed.tokens)
+            candidates = generate_interpretations(parsed.tokens)
         except TranscriptionError as error:
             raise HTTPException(status_code=422, detail=str(error)) from error
         except NumberParsingError as error:
@@ -89,8 +89,13 @@ async def interpret(audio: UploadFile = File(...)) -> InterpretationResponse:
 
         return InterpretationResponse(
             transcript=transcription.text,
-            interpretation=number,
-            valid_greek_phone=valid,
+            interpretations=[
+                InterpretationItem(
+                    number=candidate.number,
+                    valid_greek_phone=is_valid_greek_phone(candidate.number),
+                )
+                for candidate in candidates
+            ],
         )
     finally:
         path.unlink(missing_ok=True)
