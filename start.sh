@@ -5,6 +5,7 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BACKEND_DIR="$ROOT_DIR/nni-backend"
 FRONTEND_DIR="$ROOT_DIR/nni-frontend"
 export UV_CACHE_DIR="${UV_CACHE_DIR:-${TMPDIR:-/tmp}/nni-omilia-uv-cache}"
+RESTART_DELAY_SECONDS="${RESTART_DELAY_SECONDS:-1}"
 
 find_free_port() {
   python3 - "$1" <<'PY'
@@ -48,15 +49,55 @@ fi
 BACKEND_PID=""
 FRONTEND_PID=""
 
+run_service() {
+  local service_name="$1"
+  shift
+
+  local service_pid=""
+  local stopping=0
+  local exit_code=0
+
+  stop_service() {
+    stopping=1
+    if [ -n "$service_pid" ] && kill -0 "$service_pid" 2>/dev/null; then
+      kill "$service_pid" 2>/dev/null || true
+      wait "$service_pid" 2>/dev/null || true
+    fi
+    exit 143
+  }
+  trap stop_service INT TERM
+
+  while [ "$stopping" -eq 0 ]; do
+    echo "Starting $service_name"
+    "$@" &
+    service_pid=$!
+
+    if wait "$service_pid"; then
+      exit_code=0
+    else
+      exit_code=$?
+    fi
+    service_pid=""
+
+    if [ "$stopping" -eq 1 ]; then
+      break
+    fi
+
+    echo "$service_name stopped with exit code $exit_code; restarting in ${RESTART_DELAY_SECONDS}s..." >&2
+    sleep "$RESTART_DELAY_SECONDS"
+  done
+}
+
 cleanup() {
   trap - INT TERM EXIT
-  [ -z "$BACKEND_PID" ] || kill "$BACKEND_PID" 2>/dev/null || true
-  [ -z "$FRONTEND_PID" ] || kill "$FRONTEND_PID" 2>/dev/null || true
+  for service_pid in "$BACKEND_PID" "$FRONTEND_PID"; do
+    [ -z "$service_pid" ] || kill "$service_pid" 2>/dev/null || true
+  done
 }
 trap cleanup INT TERM EXIT
 
-echo "Starting backend at http://127.0.0.1:$BACKEND_PORT"
-uv run --project "$BACKEND_DIR" uvicorn nni_backend.api:app --host 127.0.0.1 --port "$BACKEND_PORT" &
+run_service "backend at http://127.0.0.1:$BACKEND_PORT" \
+  uv run --project "$BACKEND_DIR" uvicorn nni_backend.api:app --host 127.0.0.1 --port "$BACKEND_PORT" &
 BACKEND_PID=$!
 
 sleep 1
@@ -65,8 +106,9 @@ if ! kill -0 "$BACKEND_PID" 2>/dev/null; then
   exit 1
 fi
 
-echo "Starting frontend at http://localhost:$FRONTEND_PORT"
-VITE_BACKEND_URL="http://127.0.0.1:$BACKEND_PORT" npm --prefix "$FRONTEND_DIR" run dev -- --host 127.0.0.1 --port "$FRONTEND_PORT" &
+run_service "frontend at http://localhost:$FRONTEND_PORT" \
+  env VITE_BACKEND_URL="http://127.0.0.1:$BACKEND_PORT" \
+  npm --prefix "$FRONTEND_DIR" run dev -- --host 127.0.0.1 --port "$FRONTEND_PORT" &
 FRONTEND_PID=$!
 
 sleep 1

@@ -21,7 +21,9 @@ Then open the frontend URL printed by the script, normally <http://localhost:517
 
 The script automatically selects the first free backend port starting at `8000` and the first free frontend port starting at `5173`. You can override them with `BACKEND_PORT` and `FRONTEND_PORT`.
 
-The script prepares the backend environment, installs frontend dependencies when needed, and starts both services. The `tiny` multilingual Whisper model is downloaded and cached automatically on the first audio request.
+The script prepares the backend environment, installs frontend dependencies when needed, and starts both services. If either service exits unexpectedly, the script restarts it automatically after a short delay. Press `Ctrl+C` to stop both services. The `tiny` multilingual Whisper model is downloaded and cached automatically on the first audio request.
+
+Set `RESTART_DELAY_SECONDS` to change the restart delay when needed.
 
 ## Manual commands
 
