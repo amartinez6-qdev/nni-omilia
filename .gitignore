@@ -1,13 +1,22 @@
 # Python
-nni-backend/.venv/
-nni-backend/__pycache__/
-nni-backend/.pytest_cache/
-nni-backend/*.egg-info/
+**/.venv/
+**/__pycache__/
+**/.pytest_cache/
+**/*.egg-info/
+.mypy_cache/
+.ruff_cache/
 
 # Frontend
-nni-frontend/node_modules/
-nni-frontend/dist/
-nni-frontend/.vite/
+**/node_modules/
+**/dist/
+**/.vite/
+.npm/
+.pnpm-store/
+.yarn/
+.yarn-cache/
+
+# Keep package-lock.json and uv.lock versioned; only generated dependency
+# directories and local tooling caches are ignored.
 
 # Local files
 .DS_Store
