@@ -32,7 +32,7 @@ Backend:
 ```bash
 cd nni-backend
 uv sync
-uv run uvicorn nni_backend.api:app --reload --port 8000
+uv run uvicorn src.api:app --reload --port 8000
 ```
 
 Frontend:

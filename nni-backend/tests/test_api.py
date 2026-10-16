@@ -2,8 +2,8 @@ from pathlib import Path
 
 from fastapi.testclient import TestClient
 
-from nni_backend import api
-from nni_backend.transcription import TranscriptionResult
+from src import api
+from src.transcription import TranscriptionResult
 
 
 class FakeTranscriber:

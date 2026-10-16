@@ -97,7 +97,7 @@ cleanup() {
 trap cleanup INT TERM EXIT
 
 run_service "backend at http://127.0.0.1:$BACKEND_PORT" \
-  uv run --project "$BACKEND_DIR" uvicorn nni_backend.api:app --host 127.0.0.1 --port "$BACKEND_PORT" &
+  uv run --project "$BACKEND_DIR" uvicorn src.api:app --host 127.0.0.1 --port "$BACKEND_PORT" &
 BACKEND_PID=$!
 
 sleep 1

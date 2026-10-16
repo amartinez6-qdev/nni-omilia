@@ -24,8 +24,15 @@ dev = [
 ]
 
 [project.scripts]
-nni-backend = "nni_backend:main"
+nni-backend = "src:main"
 
 [build-system]
 requires = ["uv_build>=0.12.7,<0.13.0"]
 build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-root = ""
+module-name = "src"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]

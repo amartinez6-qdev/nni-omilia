@@ -1,6 +1,6 @@
 import pytest
 
-from nni_backend.engine import InterpretationError, _generate_candidates, interpret_tokens, is_valid_greek_phone
+from src.engine import InterpretationError, _generate_candidates, interpret_tokens, is_valid_greek_phone
 
 
 def numbers(tokens: list[str]) -> list[str]:

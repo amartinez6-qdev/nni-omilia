@@ -1,4 +1,4 @@
-from nni_backend.number_parser import parse_transcript
+from src.number_parser import parse_transcript
 
 
 def test_numeric_transcript_is_split_into_supported_tokens() -> None:
