@@ -1,0 +1,29 @@
+[project]
+name = "nni-backend"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "amartinez6-qdev", email = "adrimm666@gmail.com" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi>=0.115,<1.0",
+    "faster-whisper>=1.1,<2.0",
+    "python-multipart>=0.0.20,<1.0",
+    "recognizers-text-number>=1.0.2a2,<2.0",
+    "uvicorn[standard]>=0.34,<1.0",
+]
+
+[dependency-groups]
+dev = [
+    "httpx>=0.28,<1.0",
+    "pytest>=8.3,<9.0",
+]
+
+[project.scripts]
+nni-backend = "nni_backend:main"
+
+[build-system]
+requires = ["uv_build>=0.12.7,<0.13.0"]
+build-backend = "uv_build"
