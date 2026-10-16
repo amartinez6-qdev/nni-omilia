@@ -49,9 +49,9 @@ npm run dev
 2. Speak a number in English or Spanish.
 3. Press **Stop recording**.
 4. The audio is submitted automatically.
-5. The application displays the transcript, the most direct interpretation, and its Greek phone-number validity.
+5. The application displays the transcript and every generated interpretation with its Greek phone-number validity.
 
-The backend detects the language automatically. The score is deterministic: the direct concatenation is preferred, and every ambiguity transformation lowers the score. Phone validity is reported but does not change the selected interpretation.
+The backend detects the language automatically. The direct concatenation is shown first, followed by all deterministic ambiguity variants. Phone validity is reported for every variant and does not change their order.
 
 ## API
 
@@ -60,8 +60,12 @@ The backend detects the language automatically. The score is deterministic: the 
 ```json
 {
   "transcript": "2 10 69 30 6 6 4",
-  "interpretation": "2106930664",
-  "valid_greek_phone": true
+  "interpretations": [
+    {"number": "2106930664", "valid_greek_phone": true},
+    {"number": "210693664", "valid_greek_phone": false},
+    {"number": "21060930664", "valid_greek_phone": false},
+    {"number": "2106093664", "valid_greek_phone": true}
+  ]
 }
 ```
 
