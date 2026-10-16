@@ -1,10 +1,14 @@
 import { useRef, useState } from 'react'
 import './App.css'
 
+type Interpretation = {
+  number: string
+  valid_greek_phone: boolean
+}
+
 type Result = {
   transcript: string
-  interpretation: string
-  valid_greek_phone: boolean
+  interpretations: Interpretation[]
 }
 
 type ViewState = 'idle' | 'recording' | 'processing' | 'result' | 'error'
@@ -128,7 +132,7 @@ function App() {
         <p className="eyebrow">Natural Number Interpretation</p>
         <h1>Speak a phone number</h1>
         <p className="intro">
-          Record a number in English or Spanish and receive the most direct interpretation.
+          Record a number in English or Spanish and receive every deterministic interpretation.
         </p>
 
         <button
@@ -158,15 +162,41 @@ function App() {
               <span className="result-label">Transcript</span>
               <p>{result.transcript}</p>
             </div>
-            <div className="result-row">
-              <span className="result-label">Interpretation</span>
-              <p className="number-result">{result.interpretation}</p>
-            </div>
-            <div className="validity-row">
-              <span>Greek phone number</span>
-              <strong className={result.valid_greek_phone ? 'valid' : 'invalid'}>
-                {result.valid_greek_phone ? 'VALID' : 'INVALID'}
-              </strong>
+            <div className="interpretations-row">
+              <div className="interpretations-heading">
+                <span className="result-label">Interpretations</span>
+                <span className="interpretation-count">
+                  {result.interpretations.length}
+                </span>
+              </div>
+              <div className="table-wrapper">
+                <table className="interpretation-table">
+                  <thead>
+                    <tr>
+                      <th scope="col">#</th>
+                      <th scope="col">Number</th>
+                      <th scope="col">Greek phone</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {result.interpretations.map((interpretation, index) => (
+                      <tr key={`${interpretation.number}-${index}`}>
+                        <td>{index + 1}</td>
+                        <td className="number-result">{interpretation.number}</td>
+                        <td>
+                          <strong
+                            className={
+                              interpretation.valid_greek_phone ? 'valid' : 'invalid'
+                            }
+                          >
+                            {interpretation.valid_greek_phone ? 'VALID' : 'INVALID'}
+                          </strong>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         )}

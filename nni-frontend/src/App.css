@@ -132,6 +132,66 @@ h1 {
   overflow-wrap: anywhere;
 }
 
+.interpretations-row {
+  display: grid;
+  gap: 12px;
+}
+
+.interpretations-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.interpretation-count {
+  display: inline-grid;
+  min-width: 28px;
+  min-height: 28px;
+  place-items: center;
+  border-radius: 999px;
+  background: #edf2ff;
+  color: var(--accent-dark);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+
+.interpretation-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: var(--text-strong);
+  text-align: left;
+}
+
+.interpretation-table th,
+.interpretation-table td {
+  padding: 13px 14px;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.interpretation-table tr:last-child td {
+  border-bottom: 0;
+}
+
+.interpretation-table th {
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.interpretation-table td:first-child {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
 .result-label {
   color: var(--text-muted);
   font-size: 0.75rem;
@@ -142,7 +202,7 @@ h1 {
 
 .number-result {
   font-family: var(--mono);
-  font-size: clamp(1.6rem, 5vw, 2.4rem);
+  font-size: 1.05rem;
   letter-spacing: 0.04em;
 }
 
